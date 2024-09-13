@@ -292,6 +292,7 @@ function Box({ children }) {
 function MovieDetails({ selectedId, onCloseMovie }) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     Title: title,
@@ -316,10 +317,14 @@ function MovieDetails({ selectedId, onCloseMovie }) {
           const res = await fetch(
             `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
           );
+
+          if (!res.ok) throw new Error("Error getting movie details");
+
           const data = await res.json();
           // console.log(data);
           setMovie(data);
         } catch (err) {
+          setErrorMessage(err.message);
         } finally {
           setIsLoading(false);
         }
@@ -332,9 +337,8 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
   return (
     <div className="details">
-      {isLoading ? (
-        <Loader />
-      ) : (
+      {isLoading && <Loader />}
+      {!isLoading && !errorMessage && (
         <>
           <header>
             <button className="btn-back" onClick={onCloseMovie}>
@@ -366,6 +370,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
           </section>
         </>
       )}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
     </div>
   );
 }
