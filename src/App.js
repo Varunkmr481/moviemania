@@ -64,7 +64,7 @@ export default function App() {
     // console.log("String value :", storedValue);
     return JSON.parse(storedValue);
   });
-  const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
+  const { movies, isLoading, error } = useMovies(query);
 
   // useEffect(function () {
   //   console.log("After initial render");
